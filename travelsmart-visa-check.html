@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Visa Check · TravelSmart®</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,700;0,900;1,300;1,700&family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0d0d12;
+  --ink2: #1c1c26;
+  --teal: #0d9488;
+  --teal-light: #14b8a6;
+  --teal-glow: rgba(13,148,136,.15);
+  --teal-pale: #f0fdfa;
+  --sky: #e0f7f5;
+  --border: #e2e8f0;
+  --muted: #64748b;
+  --white: #ffffff;
+  --surface: #f8fafc;
+  --free: #059669;
+  --free-bg: #ecfdf5;
+  --visa: #d97706;
+  --visa-bg: #fffbeb;
+  --evisa: #2563eb;
+  --evisa-bg: #eff6ff;
+  --denied: #dc2626;
+  --denied-bg: #fef2f2;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--surface);
+  color: var(--ink);
+  font-family: 'Outfit', sans-serif;
+  min-height: 100vh;
+}
+
+/* ── HEADER ── */
+.header {
+  background: var(--ink);
+  padding: 1.2rem 5vw;
+  display: flex; justify-content: space-between; align-items: center;
+  position: sticky; top: 0; z-index: 200;
+}
+.logo {
+  font-family: 'Fraunces', serif;
+  font-size: 1.25rem; font-weight: 700;
+  color: var(--white); letter-spacing: -.02em;
+}
+.logo span { color: var(--teal-light); }
+.header-pill {
+  font-family: 'DM Mono', monospace; font-size: .65rem;
+  letter-spacing: .15em; text-transform: uppercase;
+  color: var(--teal-light); background: rgba(20,184,166,.1);
+  border: 1px solid rgba(20,184,166,.25); padding: .3rem .8rem;
+  border-radius: 20px;
+}
+
+/* ── HERO ── */
+.hero {
+  background: var(--ink);
+  padding: 5rem 5vw 3.5rem;
+  text-align: center;
+  position: relative; overflow: hidden;
+}
+.hero-glow {
+  position: absolute; top: -80px; left: 50%;
+  transform: translateX(-50%);
+  width: 700px; height: 400px;
+  background: radial-gradient(ellipse, rgba(13,148,136,.25) 0%, transparent 65%);
+  pointer-events: none;
+}
+.hero-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(20,184,166,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(20,184,166,.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+.hero-eyebrow {
+  font-family: 'DM Mono', monospace; font-size: .7rem;
+  letter-spacing: .2em; text-transform: uppercase;
+  color: var(--teal-light); background: rgba(20,184,166,.1);
+  border: 1px solid rgba(20,184,166,.2);
+  padding: .4rem 1.2rem; border-radius: 20px;
+  display: inline-block; margin-bottom: 2rem;
+  position: relative; z-index: 1;
+  animation: fadeUp .6s ease both;
+}
+.hero h1 {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-weight: 900; line-height: .95;
+  color: var(--white); letter-spacing: -.03em;
+  max-width: 12ch; margin: 0 auto 1.5rem;
+  position: relative; z-index: 1;
+  animation: fadeUp .6s ease .1s both;
+}
+.hero h1 em { color: var(--teal-light); font-style: italic; font-weight: 300; }
+.hero-sub {
+  font-size: 1rem; color: rgba(255,255,255,.55);
+  max-width: 44ch; margin: 0 auto 3rem;
+  line-height: 1.7; font-weight: 300;
+  position: relative; z-index: 1;
+  animation: fadeUp .6s ease .2s both;
+}
+
+/* ── SEARCH BOX ── */
+.search-box {
+  background: var(--white);
+  border-radius: 16px; padding: 2rem 2.5rem;
+  max-width: 700px; margin: 0 auto;
+  box-shadow: 0 25px 80px rgba(0,0,0,.4);
+  position: relative; z-index: 1;
+  animation: fadeUp .6s ease .3s both;
+}
+.search-row {
+  display: grid; grid-template-columns: 1fr auto 1fr;
+  gap: 1rem; align-items: end;
+}
+.field { display: flex; flex-direction: column; gap: .5rem; }
+.field label {
+  font-family: 'DM Mono', monospace; font-size: .65rem;
+  letter-spacing: .15em; text-transform: uppercase;
+  color: var(--muted);
+}
+.field select, .field input {
+  width: 100%; padding: .85rem 1rem;
+  border: 2px solid var(--border); border-radius: 8px;
+  font-family: 'Outfit', sans-serif; font-size: .95rem;
+  color: var(--ink); background: var(--surface);
+  transition: border-color .2s, box-shadow .2s;
+  appearance: none; cursor: pointer;
+}
+.field select:focus, .field input:focus {
+  outline: none; border-color: var(--teal);
+  box-shadow: 0 0 0 3px var(--teal-glow);
+}
+.arrow-icon {
+  font-size: 1.5rem; color: var(--teal);
+  display: flex; align-items: center; justify-content: center;
+  padding-bottom: .5rem;
+}
+.btn-check {
+  width: 100%; margin-top: 1.2rem;
+  background: var(--teal); color: var(--white);
+  font-family: 'Outfit', sans-serif; font-weight: 700;
+  font-size: 1rem; padding: 1rem;
+  border: none; border-radius: 8px; cursor: pointer;
+  transition: all .2s; letter-spacing: -.01em;
+  display: flex; align-items: center; justify-content: center; gap: .6rem;
+}
+.btn-check:hover {
+  background: var(--teal-light);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(13,148,136,.35);
+}
+
+/* ── STATS BAR ── */
+.stats-bar {
+  background: var(--ink2); padding: 1rem 5vw;
+  display: flex; justify-content: center; gap: 3rem;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.sbar-item {
+  display: flex; align-items: center; gap: .6rem;
+  font-size: .8rem; color: rgba(255,255,255,.5);
+}
+.sbar-num {
+  font-family: 'Fraunces', serif; font-size: 1.1rem;
+  font-weight: 700; color: var(--teal-light);
+}
+
+/* ── MAIN CONTENT ── */
+.main { max-width: 900px; margin: 0 auto; padding: 3rem 5vw 6rem; }
+
+/* ── LOADING ── */
+.loading {
+  text-align: center; padding: 4rem 0;
+  display: none;
+}
+.loading.active { display: block; }
+.loader {
+  width: 48px; height: 48px; border-radius: 50%;
+  border: 3px solid var(--border);
+  border-top-color: var(--teal);
+  margin: 0 auto 1.5rem;
+  animation: spin .8s linear infinite;
+}
+.loading p { color: var(--muted); font-size: .9rem; }
+
+/* ── RESULT ── */
+.result { display: none; animation: slideIn .4s ease both; }
+.result.active { display: block; }
+
+.result-hero {
+  border-radius: 16px; overflow: hidden;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 30px rgba(0,0,0,.08);
+}
+.result-banner {
+  padding: 2.5rem 3rem;
+  display: flex; align-items: center; gap: 2rem;
+  flex-wrap: wrap;
+}
+.result-banner.free    { background: linear-gradient(135deg, #065f46, #059669); color: white; }
+.result-banner.evisa   { background: linear-gradient(135deg, #1e3a8a, #2563eb); color: white; }
+.result-banner.visa    { background: linear-gradient(135deg, #78350f, #d97706); color: white; }
+.result-banner.denied  { background: linear-gradient(135deg, #7f1d1d, #dc2626); color: white; }
+
+.result-icon { font-size: 3.5rem; flex-shrink: 0; }
+.result-main { flex: 1; }
+.result-verdict {
+  font-family: 'DM Mono', monospace; font-size: .68rem;
+  letter-spacing: .2em; text-transform: uppercase;
+  opacity: .75; margin-bottom: .4rem; display: block;
+}
+.result-main h2 {
+  font-family: 'Fraunces', serif; font-size: 2rem;
+  font-weight: 700; line-height: 1.1; margin-bottom: .5rem;
+}
+.result-main p { font-size: .9rem; opacity: .8; font-weight: 300; line-height: 1.6; }
+.result-meta {
+  display: flex; gap: 1.5rem; flex-wrap: wrap; margin-top: 1.2rem;
+}
+.meta-pill {
+  background: rgba(255,255,255,.15);
+  padding: .4rem 1rem; border-radius: 20px;
+  font-size: .8rem; font-weight: 500;
+  display: flex; align-items: center; gap: .4rem;
+}
+
+/* ── DETAIL CARDS ── */
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-bottom: 2rem; }
+.detail-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.5rem;
+  box-shadow: 0 2px 12px rgba(0,0,0,.04);
+}
+.detail-card h4 {
+  font-family: 'DM Mono', monospace; font-size: .65rem;
+  letter-spacing: .15em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 1rem;
+}
+.detail-list { display: grid; gap: .6rem; }
+.detail-item {
+  display: flex; align-items: flex-start; gap: .7rem;
+  font-size: .88rem; line-height: 1.5;
+}
+.detail-dot { color: var(--teal); font-size: .7rem; margin-top: .2rem; flex-shrink: 0; }
+.detail-item strong { color: var(--ink); font-weight: 600; }
+
+/* ── DOCS REQUIRED ── */
+.docs-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 12px; padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 12px rgba(0,0,0,.04);
+}
+.docs-card h3 {
+  font-family: 'Fraunces', serif; font-size: 1.15rem;
+  margin-bottom: 1.5rem; display: flex; align-items: center; gap: .7rem;
+}
+.docs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: .8rem; }
+.doc-item {
+  display: flex; align-items: center; gap: .8rem;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: .9rem 1rem;
+  font-size: .85rem;
+}
+.doc-check {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--teal); color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .65rem; flex-shrink: 0;
+}
+.doc-check.warn { background: var(--visa); }
+
+/* ── TIPS KARMEN ── */
+.tips-card {
+  background: var(--ink); border-radius: 12px;
+  padding: 2rem; margin-bottom: 2rem;
+  position: relative; overflow: hidden;
+}
+.tips-card::before {
+  content: '✦';
+  position: absolute; right: 1.5rem; top: 1rem;
+  font-size: 5rem; opacity: .05; color: var(--teal-light);
+  font-family: serif;
+}
+.tips-card h3 {
+  font-family: 'Fraunces', serif; font-size: 1.1rem;
+  color: var(--white); margin-bottom: 1.2rem;
+  display: flex; align-items: center; gap: .6rem;
+}
+.tip-list { display: grid; gap: .8rem; }
+.tip-row {
+  display: flex; gap: .9rem; align-items: flex-start;
+  padding: .9rem 1rem; background: rgba(255,255,255,.04);
+  border-radius: 8px; border-left: 2px solid var(--teal);
+}
+.tip-row .tip-icon { font-size: 1rem; flex-shrink: 0; margin-top: .05rem; }
+.tip-row p { font-size: .85rem; color: rgba(255,255,255,.75); line-height: 1.6; }
+.tip-row p strong { color: var(--teal-light); }
+
+/* ── CTA UPGRADE ── */
+.cta-upgrade {
+  background: linear-gradient(135deg, var(--teal) 0%, #0f766e 100%);
+  border-radius: 16px; padding: 2.5rem;
+  text-align: center; color: white;
+}
+.cta-upgrade h3 {
+  font-family: 'Fraunces', serif; font-size: 1.6rem;
+  margin-bottom: .6rem;
+}
+.cta-upgrade p { font-size: .9rem; opacity: .8; margin-bottom: 2rem; font-weight: 300; line-height: 1.6; }
+.price-row { margin-bottom: 1.5rem; }
+.price-was { font-family: 'DM Mono', monospace; font-size: .8rem; opacity: .5; text-decoration: line-through; }
+.price-now { font-family: 'Fraunces', serif; font-size: 2.8rem; font-weight: 700; display: block; line-height: 1; }
+.price-desc { font-size: .75rem; opacity: .65; margin-top: .3rem; }
+.btn-get {
+  background: white; color: var(--teal);
+  font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1rem;
+  padding: 1rem 2.5rem; border: none; border-radius: 8px;
+  cursor: pointer; transition: all .2s;
+  text-decoration: none; display: inline-block; letter-spacing: -.01em;
+}
+.btn-get:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.2); }
+.cta-guarantee { margin-top: 1rem; font-size: .75rem; opacity: .5; }
+
+/* ── NEW SEARCH ── */
+.btn-new {
+  display: block; margin: 1.5rem auto 0;
+  background: transparent; border: 1px solid var(--border);
+  color: var(--muted); font-family: 'Outfit', sans-serif;
+  font-size: .85rem; padding: .65rem 1.8rem;
+  border-radius: 6px; cursor: pointer;
+  transition: all .2s;
+}
+.btn-new:hover { border-color: var(--teal); color: var(--teal); }
+
+/* ── POPULAR SEARCHES ── */
+.popular { padding: 3rem 5vw; background: var(--white); border-top: 1px solid var(--border); }
+.popular h3 {
+  font-family: 'DM Mono', monospace; font-size: .68rem;
+  letter-spacing: .15em; text-transform: uppercase;
+  color: var(--muted); text-align: center; margin-bottom: 1.5rem;
+}
+.popular-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: .6rem; max-width: 700px; margin: 0 auto; }
+.pop-btn {
+  background: var(--surface); border: 1px solid var(--border);
+  padding: .5rem 1.1rem; border-radius: 20px;
+  font-size: .82rem; cursor: pointer;
+  transition: all .2s; font-family: 'Outfit', sans-serif;
+  display: flex; align-items: center; gap: .4rem;
+}
+.pop-btn:hover { border-color: var(--teal); color: var(--teal); background: var(--teal-pale); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  .search-row { grid-template-columns: 1fr; }
+  .arrow-icon { transform: rotate(90deg); padding: 0; }
+  .detail-grid { grid-template-columns: 1fr; }
+  .result-banner { padding: 1.8rem; }
+  .result-main h2 { font-size: 1.5rem; }
+  .stats-bar { gap: 1.5rem; }
+  .docs-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="logo">Travel<span>Smart</span>®</div>
+  <div class="header-pill">Visa Check Global</div>
+</header>
+
+<!-- HERO + SEARCH -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-eyebrow">🌍 Base de datos global actualizada</div>
+  <h1>¿Necesitas <em>visa</em> para viajar?</h1>
+  <p class="hero-sub">Ingresa tu nacionalidad y destino — obtén en segundos si necesitas visa, qué documentos llevar y los tips exclusivos de Karmen.</p>
+
+  <div class="search-box">
+    <div class="search-row">
+      <div class="field">
+        <label>🛂 Tu Nacionalidad</label>
+        <select id="selectFrom">
+          <option value="">Selecciona tu país...</option>
+          <optgroup label="— América Latina —">
+            <option value="MX">🇲🇽 México</option>
+            <option value="CO">🇨🇴 Colombia</option>
+            <option value="AR">🇦🇷 Argentina</option>
+            <option value="VE">🇻🇪 Venezuela</option>
+            <option value="PE">🇵🇪 Perú</option>
+            <option value="CL">🇨🇱 Chile</option>
+            <option value="EC">🇪🇨 Ecuador</option>
+            <option value="BO">🇧🇴 Bolivia</option>
+            <option value="PY">🇵🇾 Paraguay</option>
+            <option value="UY">🇺🇾 Uruguay</option>
+            <option value="CR">🇨🇷 Costa Rica</option>
+            <option value="PA">🇵🇦 Panamá</option>
+            <option value="GT">🇬🇹 Guatemala</option>
+            <option value="HN">🇭🇳 Honduras</option>
+            <option value="SV">🇸🇻 El Salvador</option>
+            <option value="NI">🇳🇮 Nicaragua</option>
+            <option value="DO">🇩🇴 Rep. Dominicana</option>
+            <option value="CU">🇨🇺 Cuba</option>
+            <option value="BR">🇧🇷 Brasil</option>
+          </optgroup>
+          <optgroup label="— Europa —">
+            <option value="ES">🇪🇸 España</option>
+            <option value="DE">🇩🇪 Alemania</option>
+            <option value="FR">🇫🇷 Francia</option>
+            <option value="IT">🇮🇹 Italia</option>
+            <option value="PT">🇵🇹 Portugal</option>
+          </optgroup>
+          <optgroup label="— Norteamérica —">
+            <option value="US">🇺🇸 Estados Unidos</option>
+            <option value="CA">🇨🇦 Canadá</option>
+          </optgroup>
+          <optgroup label="— Asia —">
+            <option value="CN">🇨🇳 China</option>
+            <option value="IN">🇮🇳 India</option>
+            <option value="JP">🇯🇵 Japón</option>
+          </optgroup>
+        </select>
+      </div>
+      <div class="arrow-icon">→</div>
+      <div class="field">
+        <label>✈️ Destino que quieres visitar</label>
+        <select id="selectTo">
+          <option value="">Selecciona destino...</option>
+          <optgroup label="— Europa —">
+            <option value="ES">🇪🇸 España</option>
+            <option value="FR">🇫🇷 Francia</option>
+            <option value="IT">🇮🇹 Italia</option>
+            <option value="DE">🇩🇪 Alemania</option>
+            <option value="PT">🇵🇹 Portugal</option>
+            <option value="NL">🇳🇱 Países Bajos</option>
+            <option value="GB">🇬🇧 Reino Unido</option>
+            <option value="CH">🇨🇭 Suiza</option>
+            <option value="GR">🇬🇷 Grecia</option>
+            <option value="TR">🇹🇷 Turquía</option>
+          </optgroup>
+          <optgroup label="— América del Norte —">
+            <option value="US">🇺🇸 Estados Unidos</option>
+            <option value="CA">🇨🇦 Canadá</option>
+            <option value="MX">🇲🇽 México</option>
+          </optgroup>
+          <optgroup label="— América Latina —">
+            <option value="CO">🇨🇴 Colombia</option>
+            <option value="AR">🇦🇷 Argentina</option>
+            <option value="PE">🇵🇪 Perú</option>
+            <option value="CL">🇨🇱 Chile</option>
+            <option value="CR">🇨🇷 Costa Rica</option>
+            <option value="PA">🇵🇦 Panamá</option>
+            <option value="DO">🇩🇴 Rep. Dominicana</option>
+            <option value="CU">🇨🇺 Cuba</option>
+            <option value="BR">🇧🇷 Brasil</option>
+          </optgroup>
+          <optgroup label="— Asia y Medio Oriente —">
+            <option value="JP">🇯🇵 Japón</option>
+            <option value="TH">🇹🇭 Tailandia</option>
+            <option value="ID">🇮🇩 Indonesia (Bali)</option>
+            <option value="AE">🇦🇪 Emiratos Árabes</option>
+            <option value="TR">🇹🇷 Turquía</option>
+            <option value="EG">🇪🇬 Egipto</option>
+            <option value="MA">🇲🇦 Marruecos</option>
+            <option value="IN">🇮🇳 India</option>
+          </optgroup>
+        </select>
+      </div>
+    </div>
+    <button class="btn-check" onclick="checkVisa()">
+      <span>🔍</span> Verificar Requisitos de Visa
+    </button>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="sbar-item"><span class="sbar-num">195</span> países en la base</div>
+  <div class="sbar-item"><span class="sbar-num">+2,400</span> combinaciones</div>
+  <div class="sbar-item"><span class="sbar-num">2025</span> datos actualizados</div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- LOADING -->
+  <div class="loading" id="loading">
+    <div class="loader"></div>
+    <p>Consultando base de datos de visas...</p>
+  </div>
+
+  <!-- RESULT -->
+  <div class="result" id="result"></div>
+
+</div>
+
+<!-- POPULAR SEARCHES -->
+<div class="popular">
+  <h3>Búsquedas Populares</h3>
+  <div class="popular-grid">
+    <button class="pop-btn" onclick="quickSearch('MX','US')">🇲🇽→🇺🇸 México a EEUU</button>
+    <button class="pop-btn" onclick="quickSearch('CO','ES')">🇨🇴→🇪🇸 Colombia a España</button>
+    <button class="pop-btn" onclick="quickSearch('VE','ES')">🇻🇪→🇪🇸 Venezuela a España</button>
+    <button class="pop-btn" onclick="quickSearch('AR','IT')">🇦🇷→🇮🇹 Argentina a Italia</button>
+    <button class="pop-btn" onclick="quickSearch('CO','US')">🇨🇴→🇺🇸 Colombia a EEUU</button>
+    <button class="pop-btn" onclick="quickSearch('MX','ES')">🇲🇽→🇪🇸 México a España</button>
+    <button class="pop-btn" onclick="quickSearch('PE','JP')">🇵🇪→🇯🇵 Perú a Japón</button>
+    <button class="pop-btn" onclick="quickSearch('CO','AE')">🇨🇴→🇦🇪 Colombia a Dubai</button>
+    <button class="pop-btn" onclick="quickSearch('MX','CA')">🇲🇽→🇨🇦 México a Canadá</button>
+    <button class="pop-btn" onclick="quickSearch('VE','CO')">🇻🇪→🇨🇴 Venezuela a Colombia</button>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════
+// VISA DATABASE
+// ══════════════════════════════════════════════════
+const COUNTRIES = {
+  MX:'México',CO:'Colombia',AR:'Argentina',VE:'Venezuela',PE:'Perú',
+  CL:'Chile',EC:'Ecuador',BO:'Bolivia',PY:'Paraguay',UY:'Uruguay',
+  CR:'Costa Rica',PA:'Panamá',GT:'Guatemala',HN:'Honduras',SV:'El Salvador',
+  NI:'Nicaragua',DO:'Rep. Dominicana',CU:'Cuba',BR:'Brasil',
+  ES:'España',DE:'Alemania',FR:'Francia',IT:'Italia',PT:'Portugal',
+  NL:'Países Bajos',GB:'Reino Unido',CH:'Suiza',GR:'Grecia',
+  US:'Estados Unidos',CA:'Canadá',JP:'Japón',TH:'Tailandia',
+  ID:'Indonesia (Bali)',AE:'Emiratos Árabes',TR:'Turquía',
+  EG:'Egipto',MA:'Marruecos',IN:'India'
+};
+
+const FLAGS = {
+  MX:'🇲🇽',CO:'🇨🇴',AR:'🇦🇷',VE:'🇻🇪',PE:'🇵🇪',CL:'🇨🇱',EC:'🇪🇨',BO:'🇧🇴',
+  PY:'🇵🇾',UY:'🇺🇾',CR:'🇨🇷',PA:'🇵🇦',GT:'🇬🇹',HN:'🇭🇳',SV:'🇸🇻',NI:'🇳🇮',
+  DO:'🇩🇴',CU:'🇨🇺',BR:'🇧🇷',ES:'🇪🇸',DE:'🇩🇪',FR:'🇫🇷',IT:'🇮🇹',PT:'🇵🇹',
+  NL:'🇳🇱',GB:'🇬🇧',CH:'🇨🇭',GR:'🇬🇷',US:'🇺🇸',CA:'🇨🇦',MX:'🇲🇽',JP:'🇯🇵',
+  TH:'🇹🇭',ID:'🇮🇩',AE:'🇦🇪',TR:'🇹🇷',EG:'🇪🇬',MA:'🇲🇦',IN:'🇮🇳'
+};
+
+// Visa types: 'free' | 'evisa' | 'visa' | 'denied'
+const DB = {
+  // ── MÉXICO ──
+  'MX-US': { type:'visa', stay:null, cost:'$185 USD', time:'4–8 semanas', embassy:'https://mx.usembassy.gov', tips:['mx_us_1','mx_us_2','mx_us_3'] },
+  'MX-CA': { type:'evisa', stay:'6 meses', cost:'CA$7', time:'72 horas', embassy:'https://canada.ca', tips:['mx_ca_1','mx_ca_2'] },
+  'MX-ES': { type:'free', stay:'90 días', cost:'Gratis', time:'Solo pasaporte', embassy:null, tips:['free_eu_1','free_eu_2','mx_es_3'] },
+  'MX-FR': { type:'free', stay:'90 días', cost:'Gratis', time:'Solo pasaporte', embassy:null, tips:['free_eu_1','free_eu_2'] },
+  'MX-IT': { type:'free', stay:'90 días', cost:'Gratis', time:'Solo pasaporte', embassy:null, tips:['free_eu_1','free_eu_2'] },
+  'MX-JP': { type:'free', stay:'90 días', cost:'Gratis', time:'Solo pasaporte', embassy:null, tips:['jp_1','jp_2'] },
+  'MX-TH': { type:'free', stay:'30 días', cost:'Gratis', time:'Solo pasaporte', embassy:null, tips:['th_1','th_2'] },
+  'MX-ID': { type:'free', stay:'30 días', cost:'Gratis', time:'Solo pasaporte', embassy:null, tips:['id_1'] },
+  'MX-AE': { type:'free', stay:'30 días', cost:'Gratis', time:'Solo pasaporte', embassy:null, tips:['ae_1','ae_2'] },
+  'MX-TR': { type:'evisa', stay:'90 días', cost:'$50 USD', time:'Inmediata (online)', embassy:'https://www.evisa.gov.tr', tips:['tr_1'] },
+  'MX-EG': { type:'evisa', stay:'30 días', cost:'$25 USD', time:'24–48 horas', embassy:'https://www.visa2egypt.gov.eg', tips:['eg_1','eg_2'] },
+  'MX-MA': { type:'free', stay:'90 días', cost:'Gratis', time:'Solo pasaporte', embassy:null, tips:['ma_1'] },
+  // ── COLOMBIA ──
+  'CO-US': { type:'visa', stay:null, cost:'$185 USD', time:'4–10 semanas', embassy:'https://co.usembassy.gov', tips:['co_us_1','co_us_2','co_us_3'] },
+  'CO-CA': { type:'visa', stay:null, cost:'CA$100', time:'8–12 semanas', embassy:'https://canada.ca', tips:['co_ca_1','co_ca_2'] },
+  'CO-ES': { type:'free', stay:'90 días', cost:'Gratis', time:'Solo pasaporte', embassy:null, tips:['free_eu_1','co_es_2'] },
+  'CO-FR': { type:'free', stay:'90 días', cost:'Gratis', time:'Solo pasaporte', embassy:null, tips:['free_eu_1'] },
+  'CO-IT': { type:'free', stay:'90 días', cost:'Gratis', time:'Solo pasaporte', embassy:null, tips:['free_eu_1'] },
+  'CO-JP': { type:'free', stay:'90 días', cost:'Gratis', time:'Solo pasaporte', embassy:null, tips:['jp_1','jp_2'] },
+  'CO-TH': { type:'free', stay:'30 días', cost:'Gratis', time:'Solo pasaporte', embassy:null, tips:['th_1'] },
+  'CO-AE': { type:'free', stay:'30 días', cost:'Gratis', time:'Solo pasaporte', embassy:null, tips:['ae_1','ae_2'] },
+  'CO-TR': { type:'evisa', stay:'90 días', cost:'$50 USD', time:'Inmediata', embassy:'https://www.evisa.gov.tr', tips:['tr_1'] },
+  'CO-EG': { type:'evisa', stay:'30 días', cost:'$25 USD', time:'24 horas', embassy:'https://www.visa2egypt.gov.eg', tips:['eg_1'] },
+  'CO-MA': { type:'free', stay:'90 días', cost:'Gratis', time:'Solo pasaporte', embassy:null, tips:['ma_1'] },
+  'CO-MX': { type:'free', stay:'180 días', cost:'Gratis', time:'Solo pasaporte', embassy:null, tips:['latam_free'] },
+  'CO-ID': { type:'free', stay:'30 días', cost:'Gratis', time:'Solo pasaporte', embassy:null, tips:['id_1'] },
+  // ── VENEZUELA ──
+  'VE-ES': { type:'visa', stay:null, cost:'€80', time:'4–8 semanas', embassy:'https://www.exteriores.gob.es', tips:['ve_es_1','ve_es_2','ve_es_3'] },
+  'VE-US': { type:'visa', stay:null, cost:'$185 USD', time:'8–16 semanas', embassy:'https://ve.usembassy.gov', tips:['ve_us_1'] },
+  'VE-CO': { type:'free', stay:'90 días', cost:'Gratis', time:'Solo pasaporte', embassy:null, tips:['latam_free'] },
+  'VE-MX': { type:'free', stay:'180 días', cost:'Gratis', time:'Solo pasaporte', embassy:null, tips:['latam_free'] },
+  'VE-TR': { type:'free', stay:'90 días', cost:'Gratis', time:'Solo pasaporte', embassy:null, tips:['tr_1'] },
+  'VE-AE': { type:'visa', stay:null, cost:'$90 USD', time:'3–5 días', embassy:null, tips:['ae_1'] },
+  'VE-MA': { type:'visa', stay:null, cost:'€30', time:'2–4 semanas', embassy:null, tips:['ma_1'] },
+  // ── ARGENTINA ──
+  'AR-US': { type:'visa', stay:null, cost:'$185 USD', time:'4–8 semanas', embassy:'https://ar.usembassy.gov', tips:['ar_us_1'] },
+  'AR-ES': { type:'free', stay:'90 días', cost:'Gratis', time:'Solo pasaporte', embassy:null, tips:['free_eu_1','free_eu_2'] },
+  'AR-IT': { type:'free', stay:'90 días', cost:'Gratis', time:'Solo pasaporte', embassy:null, tips:['free_eu_1','ar_it_2'] },
+  'AR-JP': { type:'free', stay:'90 días', cost:'Gratis', time:'Solo pasaporte', embassy:null, tips:['jp_1','jp_2'] },
+  'AR-AE': { type:'free', stay:'30 días', cost:'Gratis', time:'Solo pasaporte', embassy:null, tips:['ae_1','ae_2'] },
+  'AR-EG': { type:'evisa', stay:'30 días', cost:'$25 USD', time:'24 horas', embassy:'https://www.visa2egypt.gov.eg', tips:['eg_1'] },
+  'AR-TH': { type:'free', stay:'30 días', cost:'Gratis', time:'Solo pasaporte', embassy:null, tips:['th_1'] },
+  // ── PERÚ ──
+  'PE-US': { type:'visa', stay:null, cost:'$185 USD', time:'4–8 semanas', embassy:'https://pe.usembassy.gov', tips:['latam_us_1'] },
+  'PE-ES': { type:'free', stay:'90 días', cost:'Gratis', time:'Solo pasaporte', embassy:null, tips:['free_eu_1'] },
+  'PE-JP': { type:'free', stay:'90 días', cost:'Gratis', time:'Solo pasaporte', embassy:null, tips:['jp_1','jp_2'] },
+  'PE-AE': { type:'evisa', stay:'30 días', cost:'$90 USD', time:'3 días', embassy:null, tips:['ae_1'] },
+  // ── CHILE ──
+  'CL-US': { type:'free', stay:'90 días', cost:'Gratis', time:'Solo pasaporte + ESTA $21', embassy:'https://esta.cbp.dhs.gov', tips:['cl_us_1','cl_us_2'] },
+  'CL-CA': { type:'evisa', stay:'6 meses', cost:'CA$7', time:'72 horas', embassy:'https://canada.ca', tips:['mx_ca_1'] },
+  'CL-ES': { type:'free', stay:'90 días', cost:'Gratis', time:'Solo pasaporte', embassy:null, tips:['free_eu_1'] },
+  'CL-JP': { type:'free', stay:'90 días', cost:'Gratis', time:'Solo pasaporte', embassy:null, tips:['jp_1'] },
+  // ── BRASIL ──
+  'BR-US': { type:'visa', stay:null, cost:'$185 USD', time:'4–8 semanas', embassy:'https://br.usembassy.gov', tips:['latam_us_1'] },
+  'BR-ES': { type:'free', stay:'90 días', cost:'Gratis', time:'Solo pasaporte', embassy:null, tips:['free_eu_1'] },
+  'BR-JP': { type:'free', stay:'90 días', cost:'Gratis', time:'Solo pasaporte', embassy:null, tips:['jp_1'] },
+  // ── CUBA ──
+  'CU-ES': { type:'free', stay:'90 días', cost:'Gratis + Seguro viaje obligatorio', time:'Solo pasaporte', embassy:null, tips:['cu_es_1','cu_es_2'] },
+  'CU-MX': { type:'free', stay:'180 días', cost:'Gratis + Tarjeta turista ~$25', time:'En aeropuerto', embassy:null, tips:['latam_free'] },
+  'CU-CO': { type:'free', stay:'90 días', cost:'Gratis + Tarjeta turista', time:'En aeropuerto', embassy:null, tips:['latam_free'] },
+  // ── ESPAÑA (pasaporte europeo) ──
+  'ES-US': { type:'free', stay:'90 días', cost:'ESTA $21', time:'Inmediata online', embassy:'https://esta.cbp.dhs.gov', tips:['eu_us_1','eu_us_2'] },
+  'ES-JP': { type:'free', stay:'90 días', cost:'Gratis', time:'Solo pasaporte', embassy:null, tips:['jp_1'] },
+  'ES-AE': { type:'free', stay:'30 días', cost:'Gratis', time:'Solo pasaporte', embassy:null, tips:['ae_1'] },
+};
+
+const TIPS_DB = {
+  mx_us_1: { icon:'⚠️', text:'<strong>El historial financiero importa:</strong> Demuestra solvencia económica con estados de cuenta de los últimos 3–6 meses. El mínimo recomendado es $5,000 USD en cuenta.' },
+  mx_us_2: { icon:'📋', text:'<strong>Entrevista en consulado:</strong> Lleva carta de trabajo, escrituras o arrendamiento de propiedad, y comprobantes de lazos familiares en México. El oficial quiere ver que tienes razones para regresar.' },
+  mx_us_3: { icon:'💡', text:'<strong>Aplica con tiempo:</strong> Los tiempos de espera se han extendido. Agenda con al menos 3 meses de anticipación para citas en Ciudad de México, Guadalajara y Monterrey.' },
+  mx_ca_1: { icon:'⚡', text:'<strong>eTA para Canadá:</strong> Solo necesitas la Autorización Electrónica de Viaje (eTA) en línea. Se aprueba en minutos a $7 CAD. No confundas con la visa de residencia.' },
+  mx_ca_2: { icon:'✅', text:'<strong>Ventaja adicional:</strong> Si ya tienes visa americana vigente, el proceso de eTA es aún más sencillo.' },
+  free_eu_1: { icon:'🇪🇺', text:'<strong>Acuerdo Schengen:</strong> Con este pasaporte puedes entrar a los 27 países del espacio Schengen por 90 días en cualquier período de 180 días — sin visa, sin costo.' },
+  free_eu_2: { icon:'📅', text:'<strong>Cuenta los días:</strong> Los 90 días son para toda la zona Schengen, no por país. Llevar un registro de tus fechas de entrada y salida es clave.' },
+  mx_es_3: { icon:'💼', text:'<strong>Si planeas trabajar:</strong> Para estancias laborales necesitas visa de trabajo gestionada desde México antes de viajar. La entrada turística no permite trabajo remunerado.' },
+  co_us_1: { icon:'📊', text:'<strong>La entrevista es clave:</strong> Los colombianos tienen mayor tasa de rechazo. Prepara un portafolio sólido: empleo estable, propiedades, familia directa en Colombia y finanzas sanas.' },
+  co_us_2: { icon:'🔄', text:'<strong>Si te rechazaron antes:</strong> Espera al menos 12 meses y mejora tu situación financiera o laboral antes de volver a aplicar. Un rechazo reciente baja las probabilidades.' },
+  co_us_3: { icon:'💡', text:'<strong>Consulados con menor congestión:</strong> Bogotá tiene los tiempos más largos. Considera aplicar en Barranquilla o Medellín para tiempos más rápidos.' },
+  co_ca_1: { icon:'📋', text:'<strong>Visa canadiense para colombianos:</strong> Requiere prueba de empleo o negocio, finanzas estables y lazos en Colombia. El proceso puede tomar hasta 12 semanas.' },
+  co_ca_2: { icon:'💡', text:'<strong>eTA no aplica:</strong> Colombia NO califica para eTA. Necesitas visa completa tramitada en línea o en el consulado.' },
+  co_es_2: { icon:'⏳', text:'<strong>Próximamente ETIAS:</strong> A partir de 2026, los colombianos necesitarán registro previo online (ETIAS, similar al ESTA americano) para entrar a Europa. Costo estimado: €7.' },
+  ve_es_1: { icon:'📋', text:'<strong>Requisitos reforzados:</strong> Venezuela tiene controles adicionales. Necesitas justificar económicamente el viaje con estados de cuenta, carta de invitación si aplica, y reservas de hotel completas.' },
+  ve_es_2: { icon:'⏰', text:'<strong>Agenda con meses de anticipación:</strong> Las citas en el consulado español en Caracas tienen esperas de 8–16 semanas. Planifica con mucho tiempo.' },
+  ve_es_3: { icon:'🌍', text:'<strong>Alternativa:</strong> Si tienes pasaporte de otro país o residencia en un tercer país, verifica si ese documento te da mejores condiciones de entrada a España.' },
+  ve_us_1: { icon:'⚠️', text:'<strong>Situación compleja:</strong> Las relaciones diplomáticas entre Venezuela y EEUU son limitadas. Las solicitudes de visa se tramitan en embajadas de terceros países como Bogotá o Lima.' },
+  ar_us_1: { icon:'📋', text:'<strong>Similar proceso al de otros latinoamericanos:</strong> Aunque Argentina tiene pasaporte relativamente fuerte, EEUU requiere visa B1/B2. Documenta bien tus lazos patrimoniales en Argentina.' },
+  ar_it_2: { icon:'🇮🇹', text:'<strong>Ciudadanía italiana:</strong> Muchos argentinos tienen derecho a ciudadanía italiana por ascendencia. Obtenerla te da pasaporte UE con acceso libre a 190+ países sin visa.' },
+  cl_us_1: { icon:'🇺🇸', text:'<strong>Chile en el Visa Waiver Program:</strong> ¡Gran ventaja! Con pasaporte chileno solo necesitas el ESTA online ($21) para entrar a EEUU hasta 90 días. Se aprueba en minutos.' },
+  cl_us_2: { icon:'💡', text:'<strong>ESTA vs Visa:</strong> El ESTA no es una visa. Si planeas trabajar, estudiar más de 90 días o ya te rechazaron una visa antes, necesitas tramitar visa regular.' },
+  jp_1: { icon:'🗾', text:'<strong>Japón sin visa:</strong> ¡Excelente destino! Puedes quedarte hasta 90 días. Llevar itinerario detallado y reservas de hotel para mostrar en migración es altamente recomendado.' },
+  jp_2: { icon:'💴', text:'<strong>Demuestra fondos en migración:</strong> Los oficiales de Japón pueden preguntar sobre tus recursos. Lleva tarjeta de crédito y registro de fondos suficientes para tu estadía.' },
+  th_1: { icon:'🌴', text:'<strong>30 días gratis en Tailandia:</strong> Llegando por aire puedes extender otros 30 días haciendo un "border run" o pagando ~$60 USD de extensión en la oficina de migración.' },
+  th_2: { icon:'✈️', text:'<strong>Visa turista (TR):</strong> Si planeas quedarte más de 60 días, tramita la visa TR en el consulado de Tailandia antes de viajar. Vale 60 días + extensión de 30.' },
+  id_1: { icon:'🏝️', text:'<strong>Bali libre de visa:</strong> Indonesia otorga entrada gratis por 30 días. Si quieres quedarte más, obtén el "Visa on Arrival" ($35 USD) o el B211A social-budaya para estancias hasta 60 días.' },
+  ae_1: { icon:'🏙️', text:'<strong>Dubai / Abu Dhabi:</strong> Los Emiratos son uno de los destinos más accesibles del Medio Oriente para latinoamericanos. Solo necesitas pasaporte vigente con al menos 6 meses de validez.' },
+  ae_2: { icon:'🛍️', text:'<strong>Tip de Karmen:</strong> Lleva suficiente efectivo o tarjeta con fondos disponibles. Migración puede preguntar sobre tu presupuesto de viaje.' },
+  tr_1: { icon:'💻', text:'<strong>eVisa online fácil:</strong> Tramita en evisa.gov.tr antes de volar. Proceso toma 5 minutos, se aprueba en horas y te da 90 días en Turquía — uno de los mejores destinos costo-beneficio del mundo.' },
+  eg_1: { icon:'🏺', text:'<strong>eVisa para Egipto:</strong> Tramítala en visa2egypt.gov.eg antes de viajar. Te la aprueban en 24–48 horas. También hay Visa on Arrival en el aeropuerto (menos recomendada por las filas).' },
+  eg_2: { icon:'🌡️', text:'<strong>Mejor época para visitar:</strong> Octubre–Marzo es la temporada ideal. El verano egipcio (Junio–Agosto) puede superar los 45°C — planifica bien tu viaje.' },
+  ma_1: { icon:'🕌', text:'<strong>Marruecos sin visa:</strong> Entrada libre para muchos latinoamericanos. Destino muy accesible, ideal combinarlo con España. Lleva dírham marroquí en efectivo — muchos lugares no aceptan tarjeta.' },
+  cu_es_1: { icon:'🏥', text:'<strong>Seguro médico OBLIGATORIO:</strong> España exige seguro de salud vigente para entrar. Sin él te pueden denegar la entrada aunque tengas todo lo demás en regla.' },
+  cu_es_2: { icon:'💳', text:'<strong>Tarjetas cubanas no funcionan en España:</strong> Abre una cuenta bancaria internacional antes de viajar. Las tarjetas emitidas en Cuba son rechazadas en Europa.' },
+  latam_free: { icon:'🌎', text:'<strong>Libre tránsito latinoamericano:</strong> La mayoría de países de Latinoamérica tienen acuerdos de libre movilidad entre sí. Con cédula de identidad o pasaporte puedes entrar sin visa.' },
+  latam_us_1: { icon:'📋', text:'<strong>Proceso estándar para visa americana:</strong> Llena el DS-160, paga $185 USD, agenda entrevista y lleva documentos que demuestren lazos con tu país: trabajo, propiedad, familia.' },
+  eu_us_1: { icon:'⚡', text:'<strong>ESTA en minutos:</strong> Solicita en esta.cbp.dhs.gov. Se aprueba en segundos o máximo 72 horas. Válido 2 años o hasta que expire tu pasaporte.' },
+  eu_us_2: { icon:'💡', text:'<strong>Atención:</strong> Si viajaste a Cuba, Irán, Iraq, Libia, Corea del Norte, Somalia, Sudán, Siria o Yemen después de 2011, el ESTA no aplica y debes solicitar visa B1/B2.' },
+};
+
+const DOCS = {
+  free: ['Pasaporte vigente (min. 6 meses)', 'Boleto de regreso', 'Reserva de hotel o alojamiento', 'Fondos suficientes (aprox. $50–100/día)', 'Seguro de viaje (recomendado)'],
+  evisa: ['Pasaporte vigente (min. 6 meses)', 'Fotografía digital reciente', 'Correo electrónico válido', 'Tarjeta de crédito/débito internacional', 'Itinerario de viaje', 'Reserva de hotel'],
+  visa: ['Pasaporte vigente (min. 6 meses + páginas en blanco)', 'Formulario de solicitud oficial', 'Fotografías tamaño visa', 'Comprobante de solvencia económica', 'Carta de trabajo o constancia de ingresos', 'Reservas de hotel confirmadas', 'Boleto de avión (ida y vuelta)', 'Seguro médico internacional', 'Carta explicando motivo del viaje'],
+  denied: ['Documentación especial requerida', 'Consultar embajada directamente']
+};
+
+const TYPE_DATA = {
+  free:   { icon:'✅', label:'SIN VISA', cls:'free',   title:'¡Puedes viajar sin visa!', color:'#059669' },
+  evisa:  { icon:'💻', label:'E-VISA ONLINE', cls:'evisa',  title:'Visa electrónica requerida', color:'#2563eb' },
+  visa:   { icon:'🛂', label:'VISA PRESENCIAL', cls:'visa',   title:'Visa en consulado requerida', color:'#d97706' },
+  denied: { icon:'⛔', label:'ACCESO RESTRINGIDO', cls:'denied', title:'Acceso muy restringido', color:'#dc2626' },
+};
+
+// ══════════════════════════════════════════════════
+// LOGIC
+// ══════════════════════════════════════════════════
+function checkVisa() {
+  const from = document.getElementById('selectFrom').value;
+  const to   = document.getElementById('selectTo').value;
+  if (!from || !to) { alert('Por favor selecciona tu nacionalidad y destino.'); return; }
+  if (from === to) { alert('El origen y destino no pueden ser el mismo país.'); return; }
+  doSearch(from, to);
+}
+
+function quickSearch(from, to) {
+  document.getElementById('selectFrom').value = from;
+  document.getElementById('selectTo').value   = to;
+  doSearch(from, to);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function doSearch(from, to) {
+  const loading = document.getElementById('loading');
+  const result  = document.getElementById('result');
+  result.classList.remove('active');
+  loading.classList.add('active');
+  setTimeout(() => {
+    loading.classList.remove('active');
+    renderResult(from, to);
+    result.classList.add('active');
+    document.querySelector('.main').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 1200);
+}
+
+function renderResult(from, to) {
+  const key  = `${from}-${to}`;
+  const data = DB[key];
+  const fromName = COUNTRIES[from] || from;
+  const toName   = COUNTRIES[to]   || to;
+  const fromFlag = FLAGS[from] || '🏳️';
+  const toFlag   = FLAGS[to]   || '🏳️';
+
+  if (!data) {
+    // Generic fallback based on common patterns
+    renderGeneric(from, to, fromName, toName, fromFlag, toFlag);
+    return;
+  }
+
+  const td = TYPE_DATA[data.type];
+  const docs = DOCS[data.type] || DOCS.free;
+
+  // Build tips
+  const tipKeys = data.tips || [];
+  const tipsHTML = tipKeys.map(k => {
+    const t = TIPS_DB[k];
+    if (!t) return '';
+    return `<div class="tip-row"><div class="tip-icon">${t.icon}</div><p>${t.text}</p></div>`;
+  }).join('');
+
+  // Build docs
+  const docsHTML = docs.map(d => `
+    <div class="doc-item">
+      <div class="doc-check">✓</div>
+      <span>${d}</span>
+    </div>`).join('');
+
+  // Meta pills
+  const metaHTML = [
+    data.stay  ? `<div class="meta-pill">📅 ${data.stay}</div>` : '',
+    data.cost  ? `<div class="meta-pill">💵 ${data.cost}</div>` : '',
+    data.time  ? `<div class="meta-pill">⏱️ ${data.time}</div>` : '',
+  ].join('');
+
+  const subtitleMap = {
+    free:   `Con pasaporte de ${fromName} puedes entrar a ${toName} sin visa ni trámites previos.`,
+    evisa:  `Necesitas tramitar una visa electrónica en línea antes de viajar — es rápido y sencillo.`,
+    visa:   `Debes solicitar visa en el consulado de ${toName} antes de tu viaje. Planifica con tiempo.`,
+    denied: `El acceso desde ${fromName} a ${toName} está muy restringido. Consulta la embajada.`,
+  };
+
+  const embassyBtn = data.embassy
+    ? `<a href="${data.embassy}" target="_blank" class="meta-pill" style="text-decoration:none;color:inherit">🔗 Sitio oficial</a>`
+    : '';
+
+  document.getElementById('result').innerHTML = `
+    <div class="result-hero">
+      <div class="result-banner ${td.cls}">
+        <div class="result-icon">${td.icon}</div>
+        <div class="result-main">
+          <span class="result-verdict">${fromFlag} ${fromName} → ${toFlag} ${toName}</span>
+          <h2>${td.title}</h2>
+          <p>${subtitleMap[data.type]}</p>
+          <div class="result-meta">
+            ${metaHTML}
+            ${embassyBtn}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-grid">
+      <div class="detail-card">
+        <h4>📋 Resumen Rápido</h4>
+        <div class="detail-list">
+          <div class="detail-item"><span class="detail-dot">▸</span><span>Tipo: <strong>${td.label}</strong></span></div>
+          ${data.stay  ? `<div class="detail-item"><span class="detail-dot">▸</span><span>Estadía máxima: <strong>${data.stay}</strong></span></div>` : ''}
+          ${data.cost  ? `<div class="detail-item"><span class="detail-dot">▸</span><span>Costo: <strong>${data.cost}</strong></span></div>` : ''}
+          ${data.time  ? `<div class="detail-item"><span class="detail-dot">▸</span><span>Tiempo proceso: <strong>${data.time}</strong></span></div>` : ''}
+        </div>
+      </div>
+      <div class="detail-card">
+        <h4>🌍 Sobre el Destino</h4>
+        <div class="detail-list">
+          <div class="detail-item"><span class="detail-dot">▸</span><span>Destino: <strong>${toFlag} ${toName}</strong></span></div>
+          <div class="detail-item"><span class="detail-dot">▸</span><span>Pasaporte: <strong>${fromFlag} ${fromName}</strong></span></div>
+          <div class="detail-item"><span class="detail-dot">▸</span><span>Vigencia mínima recomendada: <strong>6 meses</strong></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="docs-card">
+      <h3>📁 Documentos que Necesitas</h3>
+      <div class="docs-grid">${docsHTML}</div>
+    </div>
+
+    ${tipsHTML ? `
+    <div class="tips-card">
+      <h3>✦ Tips Exclusivos de Karmen</h3>
+      <div class="tip-list">${tipsHTML}</div>
+    </div>` : ''}
+
+    <div class="cta-upgrade">
+      <h3>¿Quieres la guía completa de este destino?</h3>
+      <p>Scripts de entrevista, contactos de consulados, checklist detallado por tipo de viaje y todos los trucos que Karmen usa para que sus clientes jamás sean rechazados.</p>
+      <div class="price-row">
+        <div class="price-was">Valor: $47 USD</div>
+        <span class="price-now">$27</span>
+        <div class="price-desc">Pago único · Guía completa TravelSmart®</div>
+      </div>
+      <a href="https://gumroad.com" target="_blank" class="btn-get">Quiero la Guía Completa →</a>
+      <div class="cta-guarantee">🔒 Si no te sirve, te devolvemos el dinero</div>
+    </div>
+    <button class="btn-new" onclick="resetSearch()">↩ Nueva consulta</button>
+  `;
+}
+
+function renderGeneric(from, to, fromName, toName, fromFlag, toFlag) {
+  document.getElementById('result').innerHTML = `
+    <div class="result-hero">
+      <div class="result-banner visa">
+        <div class="result-icon">🔍</div>
+        <div class="result-main">
+          <span class="result-verdict">${fromFlag} ${fromName} → ${toFlag} ${toName}</span>
+          <h2>Verifica directamente con el consulado</h2>
+          <p>No tenemos datos específicos para esta combinación. Te recomendamos consultar la embajada oficial de ${toName} en tu país.</p>
+        </div>
+      </div>
+    </div>
+    <div class="tips-card">
+      <h3>✦ Recomendaciones Generales de Karmen</h3>
+      <div class="tip-list">
+        <div class="tip-row"><div class="tip-icon">📋</div><p>Siempre lleva <strong>pasaporte con mínimo 6 meses de vigencia</strong> y al menos 2 páginas en blanco.</p></div>
+        <div class="tip-row"><div class="tip-icon">💵</div><p>Demuestra <strong>solvencia económica</strong>: estados de cuenta de últimos 3 meses y tarjeta de crédito internacional.</p></div>
+        <div class="tip-row"><div class="tip-icon">🏥</div><p>Contrata <strong>seguro médico internacional</strong> — muchos países lo solicitan y es básico para cualquier viaje.</p></div>
+        <div class="tip-row"><div class="tip-icon">🔗</div><p>Consulta el sitio oficial del <strong>Ministerio de Relaciones Exteriores</strong> de ${toName} o la embajada en tu país para requisitos actualizados.</p></div>
+      </div>
+    </div>
+    <div class="cta-upgrade">
+      <h3>¿Necesitas ayuda personalizada?</h3>
+      <p>La guía completa TravelSmart® tiene información detallada sobre 50+ destinos populares para latinoamericanos.</p>
+      <div class="price-row">
+        <div class="price-was">Valor: $47 USD</div>
+        <span class="price-now">$27</span>
+        <div class="price-desc">Pago único · Guía completa TravelSmart®</div>
+      </div>
+      <a href="https://gumroad.com" target="_blank" class="btn-get">Ver Guía Completa →</a>
+    </div>
+    <button class="btn-new" onclick="resetSearch()">↩ Nueva consulta</button>
+  `;
+}
+
+function resetSearch() {
+  document.getElementById('result').classList.remove('active');
+  document.getElementById('selectFrom').value = '';
+  document.getElementById('selectTo').value   = '';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
